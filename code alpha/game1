@@ -1,0 +1,106 @@
+import tkinter as tk
+import random
+
+words = ["python", "computer", "programming", "developer", "keyboard"]
+word = random.choice(words)
+
+guessed = []
+wrong = 0
+
+def guess_letter(letter):
+    global wrong
+
+    if letter in guessed:
+        return
+
+    guessed.append(letter)
+
+    if letter not in word:
+        wrong += 1
+
+    display_word()
+
+def display_word():
+    text = ""
+
+    for letter in word:
+        if letter in guessed:
+            text += letter + " "
+        else:
+            text += "_ "
+
+    word_label.config(text=text)
+    wrong_label.config(text=f"Wrong guesses: {wrong}/6")
+
+    if all(letter in guessed for letter in word):
+        result_label.config(text="🎉 YOU WON!")
+        disable_buttons()
+
+    elif wrong >= 6:
+        result_label.config(text=f"GAME OVER! Word: {word}")
+        disable_buttons()
+
+def disable_buttons():
+    for button in buttons:
+        button.config(state="disabled")
+
+
+# Window
+root = tk.Tk()
+root.title("Hangman Game")
+root.geometry("500x500")
+
+title = tk.Label(
+    root,
+    text="🎮 HANGMAN GAME",
+    font=("Arial", 24, "bold")
+)
+title.pack(pady=20)
+
+word_label = tk.Label(
+    root,
+    text="_ " * len(word),
+    font=("Arial", 28)
+)
+word_label.pack(pady=20)
+
+wrong_label = tk.Label(
+    root,
+    text="Wrong guesses: 0/6",
+    font=("Arial", 14)
+)
+wrong_label.pack()
+
+result_label = tk.Label(
+    root,
+    text="Guess a letter!",
+    font=("Arial", 16)
+)
+result_label.pack(pady=20)
+
+button_frame = tk.Frame(root)
+button_frame.pack()
+
+buttons = []
+
+for i in range(26):
+    letter = chr(97 + i)
+
+    button = tk.Button(
+        button_frame,
+        text=letter.upper(),
+        width=4,
+        height=2,
+        command=lambda x=letter: guess_letter(x)
+    )
+
+    button.grid(
+        row=i // 6,
+        column=i % 6,
+        padx=3,
+        pady=3
+    )
+
+    buttons.append(button)
+
+root.mainloop()
