@@ -1,0 +1,163 @@
+import os
+import shutil
+import re
+import Requests
+
+print("==========================================")
+print("       TASK 3: PYTHON TASK AUTOMATION")
+print("==========================================")
+
+# ==================================================
+# 1. MOVE ALL JPG FILES
+# Uses: os, shutil
+# ==================================================
+
+print("\n1. MOVING JPG FILES")
+print("------------------------------------------")
+
+source_folder = "Source"
+destination_folder = "JPG_Files"
+
+# Create folders if they do not exist
+os.makedirs(source_folder, exist_ok=True)
+os.makedirs(destination_folder, exist_ok=True)
+
+jpg_count = 0
+
+# Get all files from Source folder
+for filename in os.listdir(source_folder):
+
+    source_path = os.path.join(source_folder, filename)
+
+    # Make sure it is a file
+    if os.path.isfile(source_path):
+
+        # Check JPG extension
+        if filename.lower().endswith(".jpg"):
+
+            destination_path = os.path.join(
+                destination_folder,
+                filename
+            )
+
+            # Move the file
+            shutil.move(source_path, destination_path)
+
+            print(filename, "-> Moved successfully")
+
+            jpg_count += 1
+
+print("Total JPG files moved:", jpg_count)
+
+
+# ==================================================
+# 2. EXTRACT EMAIL ADDRESSES
+# Uses: re, file handling
+# ==================================================
+
+print("\n2. EXTRACTING EMAIL ADDRESSES")
+print("------------------------------------------")
+
+input_file = "emails.txt"
+output_file = "extracted_emails.txt"
+
+# Create sample file if it does not exist
+if not os.path.exists(input_file):
+
+    with open(input_file, "w") as file:
+        file.write(
+            "Contact: akshay@gmail.com\n"
+            "Student: student123@yahoo.com\n"
+            "Support: support@example.com\n"
+        )
+
+# Read the text file
+with open(input_file, "r") as file:
+    text = file.read()
+
+# Email pattern
+email_pattern = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+
+# Find email addresses
+emails = re.findall(email_pattern, text)
+
+# Remove duplicate emails
+emails = list(dict.fromkeys(emails))
+
+# Save emails to another file
+with open(output_file, "w") as file:
+
+    for email in emails:
+        file.write(email + "\n")
+
+# Display emails
+for email in emails:
+    print(email)
+
+print("Total emails found:", len(emails))
+print("Emails saved to:", output_file)
+
+
+# ==================================================
+# 3. SCRAPE WEBPAGE TITLE
+# Uses: requests, re, file handling
+# ==================================================
+
+print("\n3. SCRAPING WEBPAGE TITLE")
+print("------------------------------------------")
+
+url = "https://example.com"
+
+try:
+
+    # Send request to website
+
+    # Check response
+    response.raise_for_status()
+
+    # Get webpage HTML
+    html = response.text
+
+    # Find title
+    title_pattern = r"<title[^>]*>(.*?)</title>"
+
+    title_match = re.search(
+        title_pattern,
+        html,
+        re.IGNORECASE | re.DOTALL
+    )
+
+    if title_match:
+
+        # Get title
+        title = title_match.group(1).strip()
+
+        print("Website:", url)
+        print("Title:", title)
+
+        # Save title to file
+        with open("webpage_title.txt", "w") as file:
+            file.write(title)
+
+        print("Title saved to: webpage_title.txt")
+
+    else:
+        print("Webpage title not found.")
+
+except requests.exceptions.RequestException as error:
+
+    print("Unable to access webpage.")
+    print("Error:", error)
+
+
+# ==================================================
+# FINAL RESULT
+# ==================================================
+
+print("\n==========================================")
+print("          TASK COMPLETED")
+print("==========================================")
+print("JPG files processed      : Done")
+print("Email extraction         : Done")
+print("Webpage title scraping   : Done")
+print("==========================================")
